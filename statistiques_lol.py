@@ -3,6 +3,10 @@ import requests
 API_KEY = "RGAPI-b9d55bc9-983a-4dbc-8a2d-d85a6b33a293"
 
 def get_summoner_puuid(gameName,tagLine):
+    """
+    IN : gameName -> str, tagLine -> str
+    OUT : puuid -> str
+    """
     url = f"https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={API_KEY}"
     # print(url)
     response = requests.get(url)
@@ -11,6 +15,10 @@ def get_summoner_puuid(gameName,tagLine):
         return data['puuid']
     return None
 def get_summoner_rank(puuid):
+    """
+    IN : puuid -> str
+    OUT : [summonerName, tier, rank, leaguePoints, summoner_lvl] -> [str, str, str, int, int]
+    """
     url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}?api_key={API_KEY}"
     # print(url)
     response = requests.get(url)
@@ -29,6 +37,10 @@ def get_summoner_rank(puuid):
                     return  [league_entry['summonerName'],league_entry['tier'],league_entry['rank'],league_entry['leaguePoints'],summoner_lvl]
     return None
 def get_summoner_matches(puuid,start=0,count=10):
+    """
+    IN : puuid -> str, start -> int, count -> int
+    OUT : [gameId, gameId, ...] -> [str, str, ...]
+    """
     url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}&api_key={API_KEY}"
     # print(url)
     response = requests.get(url)
@@ -37,6 +49,10 @@ def get_summoner_matches(puuid,start=0,count=10):
         return data
     return None
 def get_players_by_game(game):
+    """
+    IN : game -> matchId
+    OUT : [puuid, puuid, ...] -> [str, str, ...]
+    """
     url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{game}?api_key={API_KEY}"
     # print(url)
     response = requests.get(url)
@@ -95,8 +111,8 @@ def display_match_ranks(matches, puuid=None):
     The x-axis represents the level, and the y-axis represents the rank.
     The graph is limited to the range of levels 1 to 700 and ranks 1 to 31.
 
-    If puuid is not None, the graph will display the puuid's player's dot in red.
-    """
+    IN : matches -> [gameId, gameId, ...], puuid -> str
+    OUT : None"""
     import matplotlib.pyplot as plt
     x = []
     y = []
@@ -120,17 +136,19 @@ def display_match_ranks(matches, puuid=None):
     plt.axis(xmin=1, xmax=700, ymin=1, ymax=31)
     plt.hlines([4.5,8.5,12.5,16.5,20.5,24.5,28.5,29.5,30.5,31.5], 1, 700, colors='grey', linestyles='dotted')
     plt.show()
-
-gameName = "mat2dius"
-tagLine = "EUW"
-puuid = get_summoner_puuid(gameName,tagLine)
-rank = get_summoner_rank(puuid)
-if rank is not None or rank != []:
-    print(f"{rank[0]}'s rank: {rank[1]} {rank[2]} ({rank[3]} lp)")
-else:
-    print("Summoner not found or an error occurred.")
-print("\nRecent matches: ")
-matches = get_summoner_matches(puuid,count=50)
-# print(matches)
-display_match_ranks(matches,puuid)
-
+def create_ranks_plot(gameName,tagLine,start=0,count=10):
+    """
+    IN : gameName -> str, tagLine -> str, start -> int, count -> int
+    OUT : None
+    Show the summoner's rank and recent matches' players on a graph.
+    """
+    puuid = get_summoner_puuid(gameName,tagLine)
+    rank = get_summoner_rank(puuid)
+    if rank is not None or rank != []:
+        print(f"{rank[0]}'s rank: {rank[1]} {rank[2]} ({rank[3]} lp)")
+    else:
+        print("Summoner not found or an error occurred.")
+    print("\nRecent matches: ")
+    matches = get_summoner_matches(puuid,start,count)
+    # print(matches)
+    display_match_ranks(matches,puuid)
