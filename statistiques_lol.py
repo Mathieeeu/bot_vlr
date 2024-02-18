@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = "RGAPI-b9d55bc9-983a-4dbc-8a2d-d85a6b33a293"
+API_KEY = "<RGAPI-KEY>"
 
 def get_summoner_puuid(gameName,tagLine):
     """

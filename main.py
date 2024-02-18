@@ -5,5 +5,4 @@ from statistiques_lol import create_ranks_plot
 gameName = input("Enter your game name: ")
 tagLine = input("Enter your tag line: ")
 
-create_ranks_plot(gameName,tagLine)
-
+create_ranks_plot(gameName,tagLine,count=50)
