@@ -125,7 +125,7 @@ def display_match_ranks(matches, puuid=None):
         n += 1
     if puuid is not None:
         puuid_rank = get_summoner_rank(puuid)
-        print(puuid_rank)
+        # print(puuid_rank)
         if puuid_rank is not None:
             plt.scatter(puuid_rank[4], rank_to_int(puuid_rank), color='red')
             print(f"Your rank: {puuid_rank[1]} {puuid_rank[2]} ({puuid_rank[3]} lp)")
